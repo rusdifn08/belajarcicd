@@ -1,24 +1,34 @@
-name: Praktik CI Sederhana
+name: CI/CD Pipeline dengan Docker
 
-# Pemicu: Kapan workflow ini harus berjalan?
 on:
-  # Workflow ini akan berjalan setiap kali ada 'push' ke branch 'main'
   push:
     branches: [ main ]
 
-# Pekerjaan: Apa saja yang harus dilakukan?
 jobs:
-  # Kita definisikan sebuah pekerjaan bernama 'tes-sederhana'
-  tes-sederhana:
-    # Pekerjaan ini akan berjalan di sebuah server virtual Ubuntu terbaru
+  build_and_push_docker_image:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write # Izin untuk menulis package
 
-    # Langkah-langkah yang akan dieksekusi secara berurutan
     steps:
-      # Langkah pertama: Menampilkan pesan
-      - name: Menampilkan Pesan Halo
-        run: echo "✅ CI Job pertama saya berhasil dijalankan!"
+      # Langkah 1: Mengunduh kode dari repo ke server virtual
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      # Langkah kedua: Menampilkan informasi direktori
-      - name: Cek isi direktori
-        run: ls -l
+      # Langkah 2: Login ke registry container milik GitHub
+      - name: Login ke GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Langkah 3: Build dan Push image Docker
+      # Baris 'tags' di bawah ini sudah disesuaikan untuk Anda
+      - name: Build dan Push Docker Image ke ghcr.io
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/rusdifn08/belajar-cicd-web:latest
