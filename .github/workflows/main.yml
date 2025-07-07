@@ -1,0 +1,24 @@
+name: Praktik CI Sederhana
+
+# Pemicu: Kapan workflow ini harus berjalan?
+on:
+  # Workflow ini akan berjalan setiap kali ada 'push' ke branch 'main'
+  push:
+    branches: [ main ]
+
+# Pekerjaan: Apa saja yang harus dilakukan?
+jobs:
+  # Kita definisikan sebuah pekerjaan bernama 'tes-sederhana'
+  tes-sederhana:
+    # Pekerjaan ini akan berjalan di sebuah server virtual Ubuntu terbaru
+    runs-on: ubuntu-latest
+
+    # Langkah-langkah yang akan dieksekusi secara berurutan
+    steps:
+      # Langkah pertama: Menampilkan pesan
+      - name: Menampilkan Pesan Halo
+        run: echo "✅ CI Job pertama saya berhasil dijalankan!"
+
+      # Langkah kedua: Menampilkan informasi direktori
+      - name: Cek isi direktori
+        run: ls -l
